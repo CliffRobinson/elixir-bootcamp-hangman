@@ -1,0 +1,7 @@
+<%= Enum.map @word, fn letter -> %>
+    <span><%= letter %></span>
+<% end %>
+
+<%= form_for :guess, Routes.page_path(@conn, :guess, @id), fn f -> %>
+  <%= text_input f, :letter %>
+<% end %>

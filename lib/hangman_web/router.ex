@@ -18,7 +18,9 @@ defmodule HangmanWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    post "/", PageController, :create_game
+    post "/game", PageController, :create_game
+    get "/game/:id", PageController, :get_game
+    post "/game/:id/guess", PageController, :guess
   end
 
   # Other scopes may use custom stacks.

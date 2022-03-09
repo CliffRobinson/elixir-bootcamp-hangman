@@ -1,5 +1,6 @@
 defmodule HangmanWeb.PageController do
   use HangmanWeb, :controller
+  import Hangman
   alias Hangman.{Repo, Game}
 
   def index(conn, _params) do
@@ -7,10 +8,18 @@ defmodule HangmanWeb.PageController do
   end
 
   def create_game(conn, _params) do
-    Repo.insert(%Game{word: "elixir"})
+    {:ok, %{:id => id, :word => word}} = Repo.insert(%Game{word: "elixir"})
 
     conn
-    |>put_flash(:info, "created new game")
-    |> render("index.html")
+    |> assign(:id, id)
+    |> assign(:word, get_word_in_progress(word, []))
+    |> render("game.html")
+  end
+
+  def guess(conn, _params) do
+    conn
+    |> assign(:id, 1)
+    |> assign(:word, get_word_in_progress("", []))
+    |> render("game.html")
   end
 end
