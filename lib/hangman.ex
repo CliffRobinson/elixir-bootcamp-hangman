@@ -8,7 +8,18 @@ defmodule Hangman do
   """
 
   # TODO: do
-  def get_word_in_progress(word, guesses) do
-    ['h', '?', 'l', 'l', '?']
+  def get_word_in_progress(game) do
+
+    # IO.puts("args are:")
+    # IO.inspect(%{:word => word, :game => game})
+
+    String.split(game.word, "", trim: true)
+    |> Enum.map(fn letter ->
+      if (Enum.any?(game.guesses, fn guess -> guess.letter == letter end)) do
+        letter
+      else
+        "?"
+      end
+    end)
   end
 end

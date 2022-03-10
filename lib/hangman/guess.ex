@@ -4,8 +4,7 @@ defmodule Hangman.Guess do
 
   schema "guesses" do
     field :letter, :string
-    field :game_id, :id
-    belongs_to :game, Game, foreign_key: :game_id
+    belongs_to :game, Hangman.Game, foreign_key: :game_id
 
     timestamps()
   end

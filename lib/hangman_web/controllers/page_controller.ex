@@ -1,6 +1,6 @@
 defmodule HangmanWeb.PageController do
   use HangmanWeb, :controller
-  import Ecto.Query
+  # import Ecto.Query
   alias Hangman.{Repo, Game, Guess}
 
   def index(conn, _params) do
@@ -8,31 +8,28 @@ defmodule HangmanWeb.PageController do
   end
 
   def get_game(conn, %{"id" => id}) do
-    game = Repo.get id
-    IO.inspect(game)
-    Repo.preload(game, :guesses)
-
-    guesses = Repo.all(from g in Guess, where: g.game_id == ^id)
-    # IO.inspect(guesses)
+    game = Repo.get(Game, id)
+    |> Repo.preload(:guesses)
+    |> IO.inspect()
 
     conn
     |> assign(:id, id)
-    |> assign(:word, Hangman.get_word_in_progress("test", []))
+    |> assign(:word, Hangman.get_word_in_progress(game))
+    # |> assign(:game, game)
     |> render("game.html")
 
   end
 
   def create_game(conn, _params) do
-    # TODO: Create random word
-    {:ok, %{:id => id}} = Repo.insert(%Game{word: "elixir"})
+    %{id: id} = Hangman.Game.create()
 
-    conn
-    |> redirect(to: "/game/#{id}")
+    redirect(conn, to: "/game/#{id}")
   end
 
   def guess(conn, %{"id" => id, "guess" => %{"letter" => letter}}) do
     {game_id, ""} = Integer.parse(id)
     # TODO add unique constraint on letter + game_id
+    # TODO: put this into schema function
     {:ok, _} = Repo.insert(%Guess{letter: letter, game_id: game_id})
 
     conn
