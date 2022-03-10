@@ -4,6 +4,7 @@ defmodule Hangman.Game do
 
   schema "games" do
     field :word, :string
+    has_many :guesses, Guess
 
     timestamps()
   end

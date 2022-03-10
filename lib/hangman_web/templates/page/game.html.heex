@@ -4,4 +4,5 @@
 
 <%= form_for :guess, Routes.page_path(@conn, :guess, @id), fn f -> %>
   <%= text_input f, :letter %>
+  <%= submit "Guess" %>
 <% end %>
