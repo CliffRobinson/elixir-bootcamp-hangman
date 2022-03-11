@@ -8,13 +8,17 @@ defmodule HangmanWeb.PageController do
   end
 
   def get_game(conn, %{"id" => id}) do
+    #mog says move to model
     game = Repo.get(Game, id)
     |> Repo.preload(:guesses)
     |> IO.inspect()
 
+
+
     conn
     |> assign(:id, id)
     |> assign(:word, Hangman.get_word_in_progress(game))
+    |> assign(:wrong_guesses, Hangman.Game.get_wrong_guesses(game))
     # |> assign(:game, game)
     |> render("game.html")
 
@@ -27,6 +31,7 @@ defmodule HangmanWeb.PageController do
   end
 
   def guess(conn, %{"id" => id, "guess" => %{"letter" => letter}}) do
+    #mog says move to model
     {game_id, ""} = Integer.parse(id)
     # TODO add unique constraint on letter + game_id
     # TODO: put this into schema function

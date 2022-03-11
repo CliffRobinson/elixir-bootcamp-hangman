@@ -2,6 +2,10 @@
     <span><%= letter %></span>
 <% end %>
 
+<p> You have made <%= length(@wrong_guesses)%> wrong guesses! </p>
+<p> wrong guesses are:  <%= Enum.map @wrong_guesses, fn letter -> %>
+    <span><%= letter %></span>
+<% end %></p>
 <%= form_for :guess, Routes.page_path(@conn, :guess, @id), fn f -> %>
   <%= text_input f, :letter %>
   <%= submit "Guess" %>

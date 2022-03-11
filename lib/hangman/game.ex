@@ -34,4 +34,20 @@ defmodule Hangman.Game do
 
     Enum.random(words) |> String.downcase()
   end
+
+  def get_wrong_guesses(game) do
+    guessed_letters(game) -- target_letters(game)
+  end
+
+  defp target_letters(game) do
+    game.word
+    |> String.graphemes()
+    |> Enum.uniq()
+  end
+
+  defp guessed_letters(game) do
+    game.guesses
+    |> Enum.map(& &1.letter)
+    |> Enum.uniq()
+  end
 end
