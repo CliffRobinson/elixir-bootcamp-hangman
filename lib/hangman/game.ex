@@ -3,11 +3,11 @@ defmodule Hangman.Game do
   import Ecto.Changeset
 
   alias __MODULE__
-  alias Hangman.Repo
+  alias Hangman.{Repo, Guess}
 
   schema "games" do
     field :word, :string
-    has_many :guesses, Hangman.Guess
+    has_many :guesses, Guess
 
     timestamps()
   end
@@ -17,6 +17,11 @@ defmodule Hangman.Game do
       word: get_random_word()
     }
     |> Repo.insert!()
+  end
+
+  def guess(game_id, letter) do
+    # TODO add unique constraint on letter + game_id
+    {:ok, _} = Repo.insert(%Guess{letter: letter, game_id: game_id})
   end
 
   @doc false

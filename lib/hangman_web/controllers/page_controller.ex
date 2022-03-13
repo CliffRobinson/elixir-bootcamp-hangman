@@ -1,12 +1,13 @@
 defmodule HangmanWeb.PageController do
   use HangmanWeb, :controller
   # import Ecto.Query
-  alias Hangman.{Repo, Game, Guess}
+  alias Hangman.{Repo, Game}
 
   def index(conn, _params) do
     render(conn, "index.html")
   end
 
+  @spec get_game(Plug.Conn.t(), map) :: Plug.Conn.t()
   def get_game(conn, %{"id" => id}) do
     #mog says move to model
     game = Repo.get(Game, id)
@@ -18,8 +19,7 @@ defmodule HangmanWeb.PageController do
     conn
     |> assign(:id, id)
     |> assign(:word, Hangman.get_word_in_progress(game))
-    |> assign(:wrong_guesses, Hangman.Game.get_wrong_guesses(game))
-    # |> assign(:game, game)
+    |> assign(:wrong_guesses, Game.get_wrong_guesses(game))
     |> render("game.html")
 
   end
@@ -31,11 +31,9 @@ defmodule HangmanWeb.PageController do
   end
 
   def guess(conn, %{"id" => id, "guess" => %{"letter" => letter}}) do
-    #mog says move to model
+    #sanitise input here or in model function?
     {game_id, ""} = Integer.parse(id)
-    # TODO add unique constraint on letter + game_id
-    # TODO: put this into schema function
-    {:ok, _} = Repo.insert(%Guess{letter: letter, game_id: game_id})
+    Hangman.Game.guess(game_id, letter)
 
     conn
     |> redirect(to: "/game/#{id}")
