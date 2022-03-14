@@ -1,7 +1,7 @@
 defmodule HangmanWeb.PageController do
   use HangmanWeb, :controller
   # import Ecto.Query
-  alias Hangman.{Repo, Game}
+  alias Hangman.Game
 
   def index(conn, _params) do
     render(conn, "index.html")
@@ -9,17 +9,14 @@ defmodule HangmanWeb.PageController do
 
   @spec get_game(Plug.Conn.t(), map) :: Plug.Conn.t()
   def get_game(conn, %{"id" => id}) do
-    #mog says move to model
-    game = Repo.get(Game, id)
-    |> Repo.preload(:guesses)
-    |> IO.inspect()
-
-
+    game = Game.load_guesses(id)
 
     conn
     |> assign(:id, id)
+    |> assign(:answer, game.word)
     |> assign(:word, Hangman.get_word_in_progress(game))
     |> assign(:wrong_guesses, Game.get_wrong_guesses(game))
+    |> assign(:result, Game.game_result(game))
     |> render("game.html")
 
   end

@@ -5,6 +5,8 @@ defmodule Hangman.Game do
   alias __MODULE__
   alias Hangman.{Repo, Guess}
 
+  @guess_limit 7
+
   schema "games" do
     field :word, :string
     has_many :guesses, Guess
@@ -54,5 +56,25 @@ defmodule Hangman.Game do
     game.guesses
     |> Enum.map(& &1.letter)
     |> Enum.uniq()
+  end
+
+  def load_guesses(game_id) do
+    Repo.get(Game, game_id)
+    |> Repo.preload(:guesses)
+  end
+
+  def game_result(game) do
+    wip = Hangman.get_word_in_progress(game)
+    wrong_guesses = get_wrong_guesses(game)
+
+    cond do
+      #replace with nil for presentation-agnosticism
+      not Enum.member?(wip, "?") ->
+        :win
+      length(wrong_guesses) == @guess_limit ->
+        :loss
+      true ->
+        :in_progress
+    end
   end
 end
